@@ -1,0 +1,8 @@
+fastapi
+SQLAlchemy
+PyJWT
+passlib
+alembic
+mysqlclient
+ruff
+bcrypt
