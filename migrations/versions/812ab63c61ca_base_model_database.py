@@ -1,10 +1,11 @@
 """base model database
 
 Revision ID: 812ab63c61ca
-Revises: 
+Revises:
 Create Date: 2024-08-01 14:27:37.044184
 
 """
+
 from typing import Sequence, Union
 
 from alembic import op
@@ -14,7 +15,7 @@ from constants import target, enum
 
 
 # revision identifiers, used by Alembic.
-revision: str = '812ab63c61ca'
+revision: str = "812ab63c61ca"
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None

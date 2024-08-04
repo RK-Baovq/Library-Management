@@ -1,4 +1,7 @@
 USER = "user"
 ADMIN = "admin"
+SUPERADMIN = "superadmin"
 BORROW = "borrowing"
 RETURN = "returned"
+ALGORITHM = "HS256"
+SECRET_KEY = "H3F3JT5FDF8GF5DG7"

@@ -10,4 +10,4 @@ class User(Base):
     username = Column(String(255), unique=True)
     password = Column(String(255))
     email = Column(String(255), unique=True)
-    user_role = Column(Enum(*enum.User_Role), default=target.USER)
+    role = Column(Enum(*enum.User_Role), default=target.USER)
