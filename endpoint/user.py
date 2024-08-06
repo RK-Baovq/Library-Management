@@ -18,8 +18,10 @@ router = APIRouter(prefix="/user", tags=[target.USER])
 def read(
     db: Session = Depends(security.get_db),
     token: str = Depends(crud_user.check_authorization),
+    page: int = 1,
+    page_size: int = 10,
 ):
-    return crud_user.read(db, token)
+    return crud_user.read(db, token, page, page_size)
 
 
 @router.post("/login")
@@ -34,8 +36,7 @@ def admin_create(
     db: Session = Depends(security.get_db),
     token: str = Depends(crud_user.check_authorization),
 ):
-    db_user = crud_user.admin_create(db, request, token)
-    return db_user
+    return crud_user.admin_create(db, request, token)
 
 
 @router.post("/superadmin")
@@ -44,8 +45,7 @@ def super_admin_create(
     db: Session = Depends(security.get_db),
     token: str = Depends(crud_user.check_authorization),
 ):
-    db_user = crud_user.super_admin_create(db, request, token)
-    return db_user
+    return crud_user.super_admin_create(db, request, token)
 
 
 @router.put("/password")

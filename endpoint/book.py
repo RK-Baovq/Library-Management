@@ -1,47 +1,47 @@
 from fastapi import Depends, APIRouter
 from sqlalchemy.orm import Session
-from crud import crud_category, crud_user
-from schemas.category import CategoryIn
 from security import security
+from crud import crud_book, crud_user
+from schemas.book import BookIn, UpdateBook, SearchIn
 from constants import target
 
+router = APIRouter(prefix="/book", tags=[target.BOOK])
 
-router = APIRouter(prefix="/category", tags=[target.CATEGORY])
 
-
-@router.get("")
+@router.post("/search")
 def read(
+    request: SearchIn,
     db: Session = Depends(security.get_db),
     token: str = Depends(crud_user.check_authorization),
     page: int = 1,
     page_size: int = 10,
 ):
-    return crud_category.read(db, token, page, page_size)
+    return crud_book.read(request, db, token, page, page_size)
 
 
-@router.post("")
+@router.post("/create")
 def create(
-    request: CategoryIn,
+    request: BookIn,
     db: Session = Depends(security.get_db),
     token: str = Depends(crud_user.check_authorization),
 ):
-    return crud_category.create(request, db, token)
+    return crud_book.create(request, db, token)
 
 
 @router.put("")
 def update(
-    category_id: int,
-    request: CategoryIn,
+    book_id: int,
+    request: UpdateBook,
     db: Session = Depends(security.get_db),
     token: str = Depends(crud_user.check_authorization),
 ):
-    return crud_category.update(category_id, request, db, token)
+    return crud_book.update(book_id, request, db, token)
 
 
 @router.delete("")
 def delete(
-    category_id: int,
+    book_id: int,
     db: Session = Depends(security.get_db),
     token: str = Depends(crud_user.check_authorization),
 ):
-    return crud_category.delete(category_id, db, token)
+    return crud_book.delete(book_id, db, token)

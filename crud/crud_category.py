@@ -3,16 +3,16 @@ from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from models.category import Category
 from constants import target
-from fastapi import Depends
 
 
-def read(db: Session, token):
+def read(db: Session, token, page, page_size):
     if (
         token["role"] == target.USER
         or token["role"] == target.ADMIN
         or token["role"] == target.SUPERADMIN
     ):
-        db_category = db.query(Category).all()
+        skip = (page - 1) * page_size
+        db_category = db.query(Category).offset(skip).limit(page_size).all()
         if db_category:
             return db_category
         else:

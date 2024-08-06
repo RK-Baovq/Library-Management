@@ -46,12 +46,13 @@ def check_authorization(
         )
 
 
-def read(db: Session, token):
+def read(db: Session, token, page, page_size):
     if token["role"] == target.ADMIN or token["role"] == target.SUPERADMIN:
         db_accounts = db.query(User).all()
         list_account = []
         for db_account in db_accounts:
             if token["role"] == target.ADMIN:
+                start = (page - 1) * page_size
                 if db_account.role == target.USER:
                     list_account.append(
                         {
@@ -61,6 +62,7 @@ def read(db: Session, token):
                         }
                     )
             else:
+                start = (page - 1) * page_size + 1
                 list_account.append(
                     {
                         "id": db_account.id,
@@ -69,7 +71,13 @@ def read(db: Session, token):
                         "role": db_account.role,
                     }
                 )
-        return list_account
+        end = start + page_size
+        if list_account[start:end] == []:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Không có tồn tại tài khoản",
+            )
+        return list_account[start:end]
     else:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
