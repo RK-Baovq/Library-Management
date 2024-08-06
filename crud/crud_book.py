@@ -39,7 +39,15 @@ def read(request, db: Session, token, page, page_size):
         else:
             books = db.query(Book).offset(skip).limit(page_size).all()
         if books:
-            return books
+            return [
+                {
+                    "id": book.id,
+                    "name": book.name,
+                    "author": book.author,
+                    "category_id": book.category,
+                }
+                for book in books
+            ]
         else:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
