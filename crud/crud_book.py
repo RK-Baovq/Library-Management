@@ -94,12 +94,13 @@ def create(request, db: Session, token):
                 "category": request.category_id,
                 "publishing_company": request.publishing_company,
                 "publication_date": str(request.publication_date),
+                "available_quantity": request.available_quantity,
                 "describe": request.describe,
             },
         )
     else:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
+            status_code=status.HTTP_403_FORBIDDEN,
             detail="Bạn không có quyền tạo quyển sách mới",
         )
 
@@ -144,7 +145,7 @@ def update(book_id, request, db: Session, token):
             )
     else:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
+            status_code=status.HTTP_403_FORBIDDEN,
             detail="Bạn không có quyền sửa thông tin quyển sách",
         )
 
@@ -163,7 +164,7 @@ def delete(book_id, db: Session, token):
             )
     else:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
+            status_code=status.HTTP_403_FORBIDDEN,
             detail="Bạn không có quyền xóa quyển sách",
         )
 

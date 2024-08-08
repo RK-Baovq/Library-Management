@@ -42,7 +42,7 @@ def upgrade() -> None:
         sa.Column("author", sa.String(255)),
         sa.Column("category", sa.Integer, sa.ForeignKey("category.id")),
         sa.Column("publishing_company", sa.String(255)),
-        sa.Column("publication_date", sa.DateTime),
+        sa.Column("publication_date", sa.Date),
         sa.Column("available_quantity", sa.Integer),
         sa.Column("describe", sa.String(255), nullable=True),
     )
@@ -51,10 +51,10 @@ def upgrade() -> None:
         sa.Column("id", sa.Integer, primary_key=True, autoincrement=True),
         sa.Column("user_id", sa.Integer),
         sa.Column("book_id", sa.Integer),
-        sa.Column("borrow_date", sa.DateTime),
-        sa.Column("expected_payment_date", sa.DateTime),
-        sa.Column("actual_payment_date", sa.DateTime, nullable=True),
-        sa.Column("status", sa.Enum(*enum.Borrow_status), default=target.BORROW),
+        sa.Column("borrow_date", sa.Date),
+        sa.Column("expected_payment_date", sa.Date),
+        sa.Column("actual_payment_date", sa.Date, nullable=True),
+        sa.Column("status", sa.Enum(*enum.Borrow_status), default=target.WAITING),
     )
 
 
