@@ -122,14 +122,19 @@ def admin_update(borrow_id, borrow_status, db: Session, token):
         if db_borrow:
             if db_borrow.status == target.WAITING:
                 if borrow_status == target.WAITING:
-                    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Không có gì thay đổi")
+                    raise HTTPException(
+                        status_code=status.HTTP_400_BAD_REQUEST,
+                        detail="Không có gì thay đổi",
+                    )
                 else:
                     if borrow_status == target.BORROWING:
                         request = {
                             "borrow_date": db_borrow.borrow_date,
                             "expected_payment_date": db_borrow.expected_payment_date,
                         }
-                        count, available_book = check_book(db_borrow.book_id, request, db)
+                        count, available_book = check_book(
+                            db_borrow.book_id, request, db
+                        )
                         if available_book - count > 0:
                             db_borrow.status = borrow_status
                         else:
@@ -140,15 +145,27 @@ def admin_update(borrow_id, borrow_status, db: Session, token):
                     elif borrow_status == target.CANCEL:
                         db_borrow.status = borrow_status
                     else:
-                        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Không thể thay đổi")
-            elif db_borrow.status == target.BORROWING and borrow_status == target.RETURNED:
+                        raise HTTPException(
+                            status_code=status.HTTP_400_BAD_REQUEST,
+                            detail="Không thể thay đổi",
+                        )
+            elif (
+                db_borrow.status == target.BORROWING
+                and borrow_status == target.RETURNED
+            ):
                 if date.today() >= db_borrow.borrow_date:
                     db_borrow.actual_payment_date = date.today()
                     db_borrow.status = borrow_status
                 else:
-                    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Không thể thay đổi trạng thái")
+                    raise HTTPException(
+                        status_code=status.HTTP_400_BAD_REQUEST,
+                        detail="Không thể thay đổi trạng thái",
+                    )
             else:
-                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Trạng thái thay đổi không phù hợp")
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="Trạng thái thay đổi không phù hợp",
+                )
             db.merge(db_borrow)
             db.commit()
             return {"message": "Bạn thay đổi thông tin yêu cầu thành công"}
