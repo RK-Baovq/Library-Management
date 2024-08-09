@@ -8,18 +8,28 @@ from datetime import date
 from sqlalchemy import and_
 
 
-def read(db: Session, token, page, page_size):
+def read(borrow_status, db: Session, token, page, page_size):
     skip = (page - 1) * page_size
+    query = db.query(Borrow)
+
     if token["role"] == target.USER:
-        db_borrow = (
-            db.query(Borrow)
-            .filter(Borrow.user_id == token["id"])
-            .offset(skip)
-            .limit(page_size)
-            .all()
-        )
-    else:
-        db_borrow = db.query(Borrow).offset(skip).limit(page_size).all()
+        query = query.filter(Borrow.user_id == token["id"])
+
+    if borrow_status != target.ALL:
+        valid_statuses = {
+            target.WAITING,
+            target.BORROWING,
+            target.RETURNED,
+            target.CANCEL,
+        }
+        if borrow_status not in valid_statuses:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Trạng thái yêu cầu không phù hợp",
+            )
+        query = query.filter(Borrow.status == borrow_status)
+
+    db_borrow = query.offset(skip).limit(page_size).all()
 
     if db_borrow:
         return db_borrow
@@ -53,6 +63,7 @@ def create(book_id, request, db: Session, token):
                 "borrow_date": str(request.borrow_date),
                 "expected_payment_date": str(request.expected_payment_date),
                 "status": target.WAITING,
+                "available": available_book - count,
             },
         )
     else:

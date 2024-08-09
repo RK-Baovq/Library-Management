@@ -11,12 +11,13 @@ router = APIRouter(prefix="/borrow", tags=[target.BORROW])
 
 @router.get("")
 def read(
+    borrow_status: str = "all",
     db: Session = Depends(security.get_db),
     token: str = Depends(crud_user.check_authorization),
     page: int = 1,
     page_size: int = 10,
 ):
-    return crud_borrow.read(db, token, page, page_size)
+    return crud_borrow.read(borrow_status, db, token, page, page_size)
 
 
 @router.post("")
